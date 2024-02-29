@@ -78,7 +78,7 @@ def all_lum(p: str, tol: float=0.8) -> tuple:
 		
 	return np.array(dates), np.array(phases), np.array(lums)
 
-def scatter_moon_data(moon_data: pd.DataFrame, savep: str='moon_plot.png') -> None:
+def scatter_moon_data(moon_data: pd.DataFrame, savep: str='moon_plot.jpg') -> None:
 	xs = moon_data['num_days'].to_numpy()
 
 	a, c, d, b = fit_sin(xs, moon_data['lum_mean'].to_numpy())
