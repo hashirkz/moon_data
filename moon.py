@@ -8,7 +8,7 @@ from datetime import datetime
 from glob import glob
 import os
 
-# rootp = lambda p: os.path.join(os.path.realpath(os.path.dirname(__file__)), p)
+rootp = lambda p: os.path.join(os.path.realpath(os.path.dirname(__file__)), p)
 
 # MOON_PHASE = {
 #	  'nm': 'new moon',
@@ -123,14 +123,6 @@ def scatter_moon_data(moon_data: pd.DataFrame, savep: str='moon_plot.jpg') -> No
 	plt.savefig(savep)
 
 if __name__ == '__main__':
-	# img = read_img('./crop/feb_06.jpg')
-	# img = rgb_to_gray(img)
-	# img = normalize(img)
-
-	# print(img)
-	# lum = luminance(img)
-	# print(lum)
-	# plt.imsave('smthn.png', img, cmap='gray')
 	
 	tol = input("lum ? ")
 	tol = 0.8 if not tol else float(tol)
@@ -143,8 +135,6 @@ if __name__ == '__main__':
 	})
 
 	moon_data['date'] = pd.to_datetime(moon_data['date'])
-	# moon_data['date'] = moon_data['date'].dt.strftime('%y-%m-%d')
-
 	moon_data = moon_data.groupby(by='date').agg({
 		'phase': 'first',
 		'lum': ['mean', 'std']
@@ -157,10 +147,9 @@ if __name__ == '__main__':
 	moon_data['num_days'] = (moon_data['date'] - pd.to_datetime('1970-01-01')).dt.days
 
 	scatter_moon_data(moon_data)
-	print(moon_data)
+	cols = ['date','phase','lum_mean','lum_std']
+	print(moon_data[cols])
 
-	# constants = fit_sin(np.arange(len(moon_data)), moon_data['lum_mean'].to_numpy())
-	# print(constants)
-	moon_data.to_csv('./moon.csv', index=False)
+	moon_data[cols].to_csv('./moon.csv', index=False)
 
 
