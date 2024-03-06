@@ -11,4 +11,4 @@
 6. plotted luminosity data and sin trend line
 
 ### graph
-![moon_plot2.jpg](./moon_plot.jpg)
+![moon_plot2.jpg](./moon_plot2.jpg)
