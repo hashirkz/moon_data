@@ -28,7 +28,8 @@ def read_img(p: str) -> np.ndarray:
 
 # grayscale m,n,3 img to m,n
 def rgb_to_gray(img: np.ndarray) -> np.ndarray:
-	return 0.299*img[:, :, 0] + 0.587*img[:, :, 0] + 0.114*img[:, :, 0]
+	r, g, b = img[:, :, 0], img[:, :, 1], img[:, :, 2]
+	return 0.2989*r + 0.5870*g + 0.1140*b
 
 # normalize img px values to 0-1
 def normalize(img: np.ndarray) -> np.ndarray:
@@ -44,13 +45,13 @@ def fit_sin(x: np.ndarray, y: np.ndarray) -> tuple:
 	guess_freq = abs(ff[np.argmax(Fyy[1:])+1])
 	guess_amp = np.std(y) * 2.**0.5
 	guess_offset = np.mean(y)
-	# guess = np.array([guess_amp, 2.*np.pi*guess_freq, 0., guess_offset])
-	guess = np.array([guess_amp, 0., guess_offset])
+	guess = np.array([guess_amp, 2.*np.pi*guess_freq, 0., guess_offset])
+	# guess = np.array([guess_amp, 0., guess_offset])
 	
-	b = 2*m.pi / (x[-1] - x[0])
-	sinf = lambda x, a, c, d: a*np.sin(b*x+c)+d
+	# b = 2*m.pi / (29.5)
+	sinf = lambda x, a, b, c, d: a*np.sin(b*x+c)+d
 	popt, _ = curve_fit(sinf, x, y, p0=guess)
-	return *popt, b
+	return popt
 
 # find lum of img *defined as lit up pxs / total num pxs
 def luminance(img: np.ndarray, tol: float=0.8) -> float:
@@ -81,7 +82,9 @@ def all_lum(p: str, tol: float=0.8) -> tuple:
 def scatter_moon_data(moon_data: pd.DataFrame, savep: str='moon_plot2.jpg') -> None:
 	xs = moon_data['num_days'].to_numpy()
 
-	a, c, d, b = fit_sin(xs, moon_data['lum_mean'].to_numpy())
+	a, b, c, d = fit_sin(xs, moon_data['lum_mean'].to_numpy())
+	print(f'estimated_period: {2*m.pi/b}d\n')
+
 	sinf = lambda x : a * np.sin(b*x + c) + d
 
 	xs = np.linspace(xs[0], xs[-1], 100)
